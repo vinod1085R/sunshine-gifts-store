@@ -1,27 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sunshine Gifts Store product inventory and management demo.">
-  <title>Sunshine Gifts Store | Gift with a little sunshine</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sunshine Gifts Store inventory management dashboard.">
+  <title>Sunshine Gifts Store | Inventory Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/"><span class="brand-mark">☀</span><span>sunshine <small>GIFTS STORE</small></span></a><div class="top-right"><span class="live-dot"></span> Inventory demo <button id="themeBtn" class="theme-btn" aria-label="Toggle theme">☾</button></div></header>
-  <main class="shell">
-    <section class="welcome"><div><p class="eyebrow">A LITTLE JOY, BEAUTIFULLY WRAPPED</p><h1>Find a gift that<br><em>feels like sunshine.</em></h1><p class="welcome-copy">A simple product inventory application built with Flask, SQLite and JavaScript.</p><div class="welcome-actions"><a href="#inventory" class="button primary">Explore inventory <span>↘</span></a><button class="button secondary" id="openAddTop">＋ Add a product</button></div></div><div class="sun-art" aria-hidden="true"><div class="sun-core">🎁</div><span class="sun-label label-one">made with love</span><span class="sun-label label-two">little things matter</span><span class="sun-orbit orbit-a"></span><span class="sun-orbit orbit-b"></span></div></section>
-    <section class="stats"><article><span class="stat-icon">🎁</span><div><p>Total products</p><strong id="totalCount">—</strong></div></article><article><span class="stat-icon">🧺</span><div><p>Gift categories</p><strong id="categoryCount">—</strong></div></article><article><span class="stat-icon">₹</span><div><p>Average price</p><strong id="averagePrice">—</strong></div></article><article><span class="stat-icon">✦</span><div><p>API status</p><strong class="api-status"><span class="live-dot"></span> Connected</strong></div></article></section>
-    <section class="inventory" id="inventory"><div class="section-head"><div><p class="eyebrow">THE COLLECTION</p><h2>Gift inventory <span id="productCountPill">0 items</span></h2><p class="muted">Manage the sample products in your store database.</p></div><button class="button primary" id="openAdd">＋ Add product</button></div>
-      <div class="toolbar"><label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Search gifts, categories or colours…" aria-label="Search products"></label><span class="toolbar-note">Sorted by recently added</span></div>
-      <div id="productGrid" class="product-grid" aria-live="polite"><div class="loading">Loading your gifts…</div></div>
-      <div id="emptyState" class="empty-state" hidden><span>🎀</span><h3>No gifts found</h3><p>Try another search or add a new product to your collection.</p></div>
-    </section>
-    <section class="api-note"><div class="api-icon">{ }</div><div><strong>Connected to a real backend</strong><p>Products are saved in SQLite. Add, edit and delete actions use Flask REST API endpoints.</p></div><a href="/health" target="_blank" rel="noopener">Check API ↗</a></section>
-    <footer><span>☀ Sunshine Gifts Store</span><span>Built as a Full Stack Development project · Flask + SQLite</span></footer>
-  </main>
-  <dialog id="productDialog" class="modal"><form id="productForm"><div class="modal-head"><div><p class="eyebrow">STORE INVENTORY</p><h2 id="dialogTitle">Add a new gift</h2></div><button type="button" class="icon-btn" id="closeDialog" aria-label="Close">×</button></div><input type="hidden" id="productId"><label>Product name<input id="p_name" name="p_name" required maxlength="80" placeholder="e.g. Classic Teddy Bear"></label><div class="form-row"><label>Category<input id="p_type" name="p_type" required maxlength="40" placeholder="e.g. Soft Toys"></label><label>Price (₹)<input id="price" name="price" type="number" min="0" step="1" required placeholder="499"></label></div><label>Colour<input id="p_color" name="p_color" required maxlength="40" placeholder="e.g. Honey Brown"></label><p id="formError" class="form-error" role="alert"></p><div class="modal-actions"><button type="button" class="button secondary" id="cancelDialog">Cancel</button><button type="submit" class="button primary" id="saveButton">Save product ↗</button></div></form></dialog>
+  <div class="app-layout">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="/" aria-label="Sunshine Gifts Store home">
+        <span class="brand-symbol">☀</span>
+        <span class="brand-copy">Sunshine <small>GIFTS STORE</small></span>
+      </a>
+      <p class="nav-label">WORKSPACE</p>
+      <a class="nav-link active" href="#dashboard"><span class="nav-icon">▦</span> Dashboard</a>
+      <a class="nav-link" href="#inventory"><span class="nav-icon">▤</span> Products <span class="nav-count" id="sidebarProductCount">0</span></a>
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip"><span class="tip-icon">✦</span><strong>A little joy goes a long way.</strong><p>Keep your gift collection organised and ready for every occasion.</p></div>
+        <div class="profile-chip"><div class="profile-avatar">SG</div><div><strong>Store Manager</strong><span>Inventory workspace</span></div><span class="profile-menu">•••</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="dashboard">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><span class="crumb-slash">/</span><strong>Dashboard</strong></div>
+        <div class="topbar-actions"><span class="system-status"><i></i><span id="apiStatusText">System online</span></span><button id="themeBtn" class="icon-button theme-button" type="button" aria-label="Toggle dark mode" title="Toggle theme">☾</button><div class="top-avatar" aria-label="Store manager">SG</div></div>
+      </header>
+
+      <div class="page-content">
+        <section class="page-heading animate-in">
+          <div><p class="eyebrow">STORE OVERVIEW</p><h1>Good things start here<span class="heading-sparkle">✦</span></h1><p class="page-subtitle">Your gift shop at a glance. Manage your products, keep details up to date, and make every gift count.</p></div>
+          <button class="button button-primary" id="openAddTop" type="button"><span class="button-plus">＋</span> Add new product</button>
+        </section>
+
+        <section class="stats-grid" aria-label="Inventory summary">
+          <article class="stat-card animate-in delay-1"><div class="stat-top"><span class="stat-label">Total products</span><span class="stat-icon icon-peach">▤</span></div><div class="stat-value" id="totalCount">—</div><div class="stat-foot"><span class="foot-dot green-dot"></span> Products in your inventory</div></article>
+          <article class="stat-card animate-in delay-2"><div class="stat-top"><span class="stat-label">Gift categories</span><span class="stat-icon icon-lilac">◇</span></div><div class="stat-value" id="categoryCount">—</div><div class="stat-foot">Different types of gifts</div></article>
+          <article class="stat-card animate-in delay-3"><div class="stat-top"><span class="stat-label">Average price</span><span class="stat-icon icon-mint">₹</span></div><div class="stat-value" id="averagePrice">—</div><div class="stat-foot">Average price per product</div></article>
+          <article class="stat-card highlight-card animate-in delay-4"><div class="stat-top"><span class="stat-label">Store status</span><span class="stat-icon icon-white">✦</span></div><div class="stat-value status-value" id="storeStatus">Connected</div><div class="stat-foot"><span class="foot-dot green-dot"></span> Flask API & database</div><div class="highlight-decoration">☀</div></article>
+        </section>
+
+        <section class="inventory-panel animate-in delay-2" id="inventory">
+          <div class="panel-heading"><div><p class="eyebrow">YOUR COLLECTION</p><h2>Product inventory <span class="count-pill" id="productCountPill">0 products</span></h2><p class="panel-subtitle">View and manage all the gifts currently stored in your database.</p></div><button class="button button-primary" id="openAdd" type="button"><span class="button-plus">＋</span> Add product</button></div>
+          <div class="inventory-toolbar"><label class="search-box"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Search by product, category or colour..." aria-label="Search inventory"><kbd>⌘ K</kbd></label><div class="toolbar-right"><span class="result-label" id="resultLabel">Loading products…</span><button class="button button-outline refresh-button" id="refreshBtn" type="button"><span>↻</span> Refresh</button></div></div>
+          <div class="table-wrap"><table class="inventory-table"><thead><tr><th>PRODUCT</th><th>PRODUCT ID</th><th>CATEGORY</th><th>COLOUR</th><th>PRICE</th><th class="actions-heading">ACTIONS</th></tr></thead><tbody id="productTableBody"><tr><td colspan="6" class="loading-cell"><span class="spinner"></span> Loading your inventory...</td></tr></tbody></table></div>
+          <div class="empty-state" id="emptyState" hidden><div class="empty-illustration">🎁</div><h3>No products found</h3><p>Try a different search or add a new product to your inventory.</p><button class="button button-primary" id="emptyAdd" type="button">＋ Add your first product</button></div>
+          <div class="table-footer"><span id="tableFooterText">Showing your inventory</span><span class="footer-live"><i></i> Changes save to your database</span></div>
+        </section>
+
+        <section class="backend-banner animate-in delay-3"><div class="backend-mark">{ }</div><div class="backend-copy"><strong>Your inventory is connected</strong><p>Product changes are handled by your Flask REST API and stored in the SQLite database.</p></div><a href="/health" target="_blank" rel="noopener noreferrer" class="health-link">Check API health <span>↗</span></a></section>
+        <footer class="page-footer"><span>☀ <strong>Sunshine Gifts Store</strong> <span class="footer-divider">·</span> Inventory Manager</span><span>Made with care <span class="footer-heart">♥</span></span></footer>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="productDialog" class="modal">
+    <form id="productForm" novalidate>
+      <div class="modal-top"><div class="modal-symbol">🎁</div><button type="button" class="icon-button modal-close" id="closeDialog" aria-label="Close dialog">×</button></div>
+      <p class="eyebrow modal-eyebrow">INVENTORY DETAILS</p><h2 id="dialogTitle">Add a new product</h2><p class="modal-description">Enter the details below. Your changes will be saved to the store database.</p>
+      <input type="hidden" id="productId">
+      <label class="field-label" for="p_name">Product name <span>*</span><input id="p_name" name="p_name" required maxlength="80" placeholder="e.g. Classic Teddy Bear" autocomplete="off"></label>
+      <div class="form-row"><label class="field-label" for="p_type">Category <span>*</span><input id="p_type" name="p_type" required maxlength="40" placeholder="e.g. Soft Toys" autocomplete="off"></label><label class="field-label" for="price">Price (₹) <span>*</span><input id="price" name="price" type="number" min="0" step="1" required placeholder="499" inputmode="numeric"></label></div>
+      <label class="field-label" for="p_color">Colour <span>*</span><input id="p_color" name="p_color" required maxlength="40" placeholder="e.g. Honey Brown" autocomplete="off"></label>
+      <p id="formError" class="form-error" role="alert"></p>
+      <div class="modal-actions"><button type="button" class="button button-outline" id="cancelDialog">Cancel</button><button type="submit" class="button button-primary" id="saveButton">Save product <span>↗</span></button></div>
+    </form>
+  </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="{{ url_for('static', filename='app.js') }}"></script>
-</body></html>
+</body>
+</html>
