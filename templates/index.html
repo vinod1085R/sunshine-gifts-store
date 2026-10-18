@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sunshine Gifts Store product inventory and management demo.">
+  <title>Sunshine Gifts Store | Gift with a little sunshine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/"><span class="brand-mark">☀</span><span>sunshine <small>GIFTS STORE</small></span></a><div class="top-right"><span class="live-dot"></span> Inventory demo <button id="themeBtn" class="theme-btn" aria-label="Toggle theme">☾</button></div></header>
+  <main class="shell">
+    <section class="welcome"><div><p class="eyebrow">A LITTLE JOY, BEAUTIFULLY WRAPPED</p><h1>Find a gift that<br><em>feels like sunshine.</em></h1><p class="welcome-copy">A simple product inventory application built with Flask, SQLite and JavaScript.</p><div class="welcome-actions"><a href="#inventory" class="button primary">Explore inventory <span>↘</span></a><button class="button secondary" id="openAddTop">＋ Add a product</button></div></div><div class="sun-art" aria-hidden="true"><div class="sun-core">🎁</div><span class="sun-label label-one">made with love</span><span class="sun-label label-two">little things matter</span><span class="sun-orbit orbit-a"></span><span class="sun-orbit orbit-b"></span></div></section>
+    <section class="stats"><article><span class="stat-icon">🎁</span><div><p>Total products</p><strong id="totalCount">—</strong></div></article><article><span class="stat-icon">🧺</span><div><p>Gift categories</p><strong id="categoryCount">—</strong></div></article><article><span class="stat-icon">₹</span><div><p>Average price</p><strong id="averagePrice">—</strong></div></article><article><span class="stat-icon">✦</span><div><p>API status</p><strong class="api-status"><span class="live-dot"></span> Connected</strong></div></article></section>
+    <section class="inventory" id="inventory"><div class="section-head"><div><p class="eyebrow">THE COLLECTION</p><h2>Gift inventory <span id="productCountPill">0 items</span></h2><p class="muted">Manage the sample products in your store database.</p></div><button class="button primary" id="openAdd">＋ Add product</button></div>
+      <div class="toolbar"><label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Search gifts, categories or colours…" aria-label="Search products"></label><span class="toolbar-note">Sorted by recently added</span></div>
+      <div id="productGrid" class="product-grid" aria-live="polite"><div class="loading">Loading your gifts…</div></div>
+      <div id="emptyState" class="empty-state" hidden><span>🎀</span><h3>No gifts found</h3><p>Try another search or add a new product to your collection.</p></div>
+    </section>
+    <section class="api-note"><div class="api-icon">{ }</div><div><strong>Connected to a real backend</strong><p>Products are saved in SQLite. Add, edit and delete actions use Flask REST API endpoints.</p></div><a href="/health" target="_blank" rel="noopener">Check API ↗</a></section>
+    <footer><span>☀ Sunshine Gifts Store</span><span>Built as a Full Stack Development project · Flask + SQLite</span></footer>
+  </main>
+  <dialog id="productDialog" class="modal"><form id="productForm"><div class="modal-head"><div><p class="eyebrow">STORE INVENTORY</p><h2 id="dialogTitle">Add a new gift</h2></div><button type="button" class="icon-btn" id="closeDialog" aria-label="Close">×</button></div><input type="hidden" id="productId"><label>Product name<input id="p_name" name="p_name" required maxlength="80" placeholder="e.g. Classic Teddy Bear"></label><div class="form-row"><label>Category<input id="p_type" name="p_type" required maxlength="40" placeholder="e.g. Soft Toys"></label><label>Price (₹)<input id="price" name="price" type="number" min="0" step="1" required placeholder="499"></label></div><label>Colour<input id="p_color" name="p_color" required maxlength="40" placeholder="e.g. Honey Brown"></label><p id="formError" class="form-error" role="alert"></p><div class="modal-actions"><button type="button" class="button secondary" id="cancelDialog">Cancel</button><button type="submit" class="button primary" id="saveButton">Save product ↗</button></div></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
